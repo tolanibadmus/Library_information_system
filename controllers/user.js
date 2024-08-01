@@ -67,7 +67,7 @@ async function userLogin(req, res) {
           token: token,
         });
       } else {
-        return res.json({
+        return res.status(400).json({
           success: false,
           message: 'Password incorrect',
         });
