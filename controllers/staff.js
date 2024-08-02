@@ -1,4 +1,5 @@
 const staffModel = require('../models/staff')
+const bookModel = require('../models/book')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -88,5 +89,6 @@ async function staffLogin(req, res) {
 
 module.exports = {
   registerStaff,
-  staffLogin
+  staffLogin,
+
 }
