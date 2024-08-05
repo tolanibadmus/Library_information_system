@@ -11,14 +11,15 @@ function authMiddleware(req, res, next) {
     });
   }
   try {
-    jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, jwtSecret);
+    req.decoded = decoded;
   } catch (err) {
     return res.json({
       success: false,
       message: 'User not logged in',
     });
   }
-  return next();
+  next();
 }
 
 module.exports = authMiddleware;

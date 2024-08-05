@@ -2,7 +2,6 @@ const userModel = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
 async function registerUser(req, res) {
   const password = req.body.password;
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,14 +34,13 @@ async function registerUser(req, res) {
   }
 }
 
-
 async function userLogin(req, res) {
   try {
-    const registeredUser = await userModel.findOne({
+    const user = await userModel.findOne({
       emailAddress: req.body.emailAddress,
     });
-    if (registeredUser) {
-      const storedPassword = registeredUser.password;
+    if (user) {
+      const storedPassword = user.password;
       const inputPassword = req.body.password;
 
       const isMatch = await bcrypt.compare(inputPassword, storedPassword);
@@ -52,7 +50,8 @@ async function userLogin(req, res) {
         const expirationInHours = '1000h';
         const token = jwt.sign(
           {
-            email: registeredUser.emailAddress,
+            id: user._id,
+            email: user.emailAddress,
           },
           jwtSecret,
           {
@@ -63,7 +62,7 @@ async function userLogin(req, res) {
         return res.json({
           success: true,
           message: 'User logged in successfully',
-          data: registeredUser,
+          data: user,
           token: token,
         });
       } else {
@@ -86,7 +85,24 @@ async function userLogin(req, res) {
   }
 }
 
+async function loadUsers(req, res) {
+  try {
+    const loadUsers = await userModel.find();
+    return res.json({
+      success: true,
+      message: 'Users loaded successfully',
+      data: loadUsers,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: 'Unable to load users',
+    });
+  }
+}
+
 module.exports = {
   registerUser,
   userLogin,
+  loadUsers,
 };

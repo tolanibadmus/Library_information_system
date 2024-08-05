@@ -2,14 +2,15 @@ const staffModel = require('../models/staff')
 const bookModel = require('../models/book')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const user = require('../models/user');
 
 async function registerStaff(req, res){
   const password = req.body.password;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try{
-    const existingStaff = await staffModel.findOne({emailAddress: req.body.emailAddress})
-    if(existingStaff){
+    const staff = await staffModel.findOne({emailAddress: req.body.emailAddress})
+    if(staff){
       return res.status(400).json({
         message: 'Email address has already been used',
       }); 
@@ -38,11 +39,11 @@ async function registerStaff(req, res){
 
 async function staffLogin(req, res) {
   try {
-    const registeredStaff = await staffModel.findOne({
+    const staff = await staffModel.findOne({
       emailAddress: req.body.emailAddress,
     });
-    if (registeredStaff) {
-      const storedPassword = registeredStaff.password;
+    if (staff) {
+      const storedPassword = staff.password;
       const inputPassword = req.body.password;
 
       const isMatch = await bcrypt.compare(inputPassword, storedPassword);
@@ -52,7 +53,9 @@ async function staffLogin(req, res) {
         const expirationInHours = '1000h';
         const token = jwt.sign(
           {
-            email: registeredStaff.emailAddress,
+            id: staff._id,
+            role: staff.role,
+            email: staff.emailAddress,
           },
           jwtSecret,
           {
@@ -63,7 +66,7 @@ async function staffLogin(req, res) {
         return res.json({
           success: true,
           message: 'Staff logged in successfully',
-          data: registeredStaff,
+          data: staff,
           token: token,
         });
       } else {
