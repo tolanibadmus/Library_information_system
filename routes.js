@@ -50,6 +50,11 @@ router.get(
   [authMiddleware, staffAccessMiddleware.allStaffCanAccessMiddleware],
   userController.loadUsers,
 );
+router.get('/staff', [
+  authMiddleware,
+  staffAccessMiddleware.superAdminMiddleware,
+  staffController.loadStaff,
+]);
 
 //delete requests
 router.delete(
@@ -57,5 +62,10 @@ router.delete(
   [authMiddleware, staffAccessMiddleware.allStaffCanAccessMiddleware],
   bookController.deleteBook,
 );
+router.delete('/staff/:id', [
+  authMiddleware,
+  staffAccessMiddleware.superAdminMiddleware,
+  staffController.deleteStaff,
+]);
 
 module.exports = router;

@@ -13,6 +13,21 @@ function allStaffCanAccessMiddleware(req, res, next) {
   next();
 }
 
+function superAdminMiddleware(req, res, next){
+  const currentUser = req.decoded;
+  const role = currentUser.role;
+
+  if(role !== "superAdmin"){
+    return res.status(400).json({
+      success: false,
+      message: 'User is not a super admin',
+    });
+  }
+
+  next()
+}
+
 module.exports = {
-  allStaffCanAccessMiddleware
+  allStaffCanAccessMiddleware,
+  superAdminMiddleware
 }

@@ -3,7 +3,7 @@ const bookModel = require('../models/book');
 
 async function getBooks(req, res) {
   try {
-    const getBooks = await bookModel.find();
+    const getBooks = await bookModel.find({quantity: { $gte: 1 }});
     return res.json({
       success: true,
       message: 'Books loaded successfully',
@@ -74,8 +74,8 @@ async function deleteBook(req, res) {
 }
 
 async function updateBook(req, res) {
-  try{
-    const updatedBook = await bookModel.findByIdAndUpdate(
+  try {
+    await bookModel.findByIdAndUpdate(
       {
         _id: req.params.id,
       },
@@ -85,14 +85,14 @@ async function updateBook(req, res) {
         category: req.body.category,
         description: req.body.description,
         quantity: req.body.quantity,
+        updatedAt: new Date(),
       },
     );
     return res.json({
       success: true,
       message: 'Book updated successfully',
-      data: updatedBook,
     });
-  } catch(err){
+  } catch (err) {
     return res.status(400).json({
       success: false,
       message: 'Failed to update book',
@@ -105,5 +105,5 @@ module.exports = {
   getBook,
   addBook,
   deleteBook,
-  updateBook
+  updateBook,
 };
