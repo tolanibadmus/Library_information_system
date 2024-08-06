@@ -1,9 +1,8 @@
-const { findByIdAndUpdate } = require('../models/book');
 const bookModel = require('../models/book');
 
 async function getBooks(req, res) {
   try {
-    const getBooks = await bookModel.find({quantity: { $gte: 1 }});
+    const getBooks = await bookModel.find({ quantity: { $gte: 1 } });
     return res.json({
       success: true,
       message: 'Books loaded successfully',

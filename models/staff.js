@@ -29,4 +29,10 @@ const staffSchema = new Schema({
   },
 });
 
+staffSchema.methods.toJSON = function () {
+  const staff = this.toObject();
+  delete staff.password;
+  return staff;
+};
+
 module.exports = mongoose.model('Staff', staffSchema);

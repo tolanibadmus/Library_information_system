@@ -16,8 +16,7 @@ const bookRentalSchema = new Schema({
     default: new Date(),
   },
   returnedAt: {
-    type: Date,
-    default: new Date(),
+    type: Date
   },
 });
 

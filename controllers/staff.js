@@ -1,8 +1,6 @@
 const staffModel = require('../models/staff');
-const bookModel = require('../models/book');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const user = require('../models/user');
 
 async function registerStaff(req, res) {
   const password = req.body.password;

@@ -34,10 +34,15 @@ router.post(
   ],
   bookController.addBook,
 );
+router.post(
+  '/books/:id/borrow',
+  [authMiddleware],
+  bookRentalController.borrowBook,
+);
 
 //put requests
 router.put(
-  '/book/:id',
+  '/books/:id',
   [authMiddleware, staffAccessMiddleware.allStaffCanAccessMiddleware],
   bookController.updateBook,
 );
@@ -56,9 +61,15 @@ router.get('/staff', [
   staffController.loadStaff,
 ]);
 
+router.get(
+  '/borrowed',
+  [authMiddleware, staffAccessMiddleware.allStaffCanAccessMiddleware],
+  bookRentalController.staffGetBorrowedBooks,
+);
+
 //delete requests
 router.delete(
-  '/book/:id',
+  '/books/:id',
   [authMiddleware, staffAccessMiddleware.allStaffCanAccessMiddleware],
   bookController.deleteBook,
 );
