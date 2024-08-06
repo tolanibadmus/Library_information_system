@@ -45,7 +45,61 @@ async function borrowBook(req, res) {
   }
 }
 
-async function staffGetBorrowedBooks(req, res) {
+async function borrowedBooksForAUser (req, res){
+  try{
+    const currentUser = req.decoded
+    const userId = currentUser.id
+    const borrowedBooks = await bookRentalModel.aggregate([
+      {
+        $match: {userId: new ObjectId(userId)}
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        }
+      },
+      {
+        $lookup: {
+          from: 'books',
+          localField: 'bookId',
+          foreignField: '_id',
+          as: 'book',
+        },
+      },
+      {
+        $set: {
+          user: { $arrayElemAt: ['$user', 0] },
+        },
+      },
+      {
+        $set: {
+          book: { $arrayElemAt: ['$book', 0] },
+        },
+      },
+      {
+        $project: {
+          'user.password': false,
+        },
+      },
+    ])
+    return res.json({
+      success: true,
+      message: 'Borrowed books loaded successfully',
+      data: borrowedBooks,
+    });
+  } catch (err){
+    return res.status(400).json({
+      success: false,
+      message: 'Unable to get borrowed books',
+    });
+  }
+}
+
+
+async function getAllBorrowedBooks(req, res) {
   try {
     const borrowedBooks = await bookRentalModel.aggregate([
       {
@@ -86,7 +140,6 @@ async function staffGetBorrowedBooks(req, res) {
       data: borrowedBooks,
     });
   } catch (err) {
-    console.log(err);
     return res.status(400).json({
       success: false,
       message: 'Unable to get borrowed books',
@@ -95,5 +148,6 @@ async function staffGetBorrowedBooks(req, res) {
 }
 module.exports = {
   borrowBook,
-  staffGetBorrowedBooks,
+  borrowedBooksForAUser,
+  getAllBorrowedBooks,
 };

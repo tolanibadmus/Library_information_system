@@ -62,9 +62,15 @@ router.get('/staff', [
 ]);
 
 router.get(
+  '/user/borrowed',
+  [authMiddleware],
+  bookRentalController.borrowedBooksForAUser,
+);
+
+router.get(
   '/borrowed',
   [authMiddleware, staffAccessMiddleware.allStaffCanAccessMiddleware],
-  bookRentalController.staffGetBorrowedBooks,
+  bookRentalController.getAllBorrowedBooks,
 );
 
 //delete requests
