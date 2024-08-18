@@ -40,6 +40,12 @@ router.post(
   bookRentalController.borrowBook,
 );
 
+router.post(
+  '/books/:id/return',
+  [authMiddleware],
+  bookRentalController.returnBorrowedBook,
+);
+
 //put requests
 router.put(
   '/books/:id',
