@@ -21,4 +21,11 @@ app.use(express.json());
 
 app.use('/', router);
 
+app.get('/healthcheck', (req, res) => {
+  res.json({
+    success: true,
+    message: 'OK',
+  });
+});
+
 app.listen(PORT);
