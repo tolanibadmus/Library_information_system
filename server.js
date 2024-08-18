@@ -21,7 +21,7 @@ app.use(express.json());
 
 app.use('/', router);
 
-app.get('/healthcheck', (req, res) => {
+app.get('/healthCheck', (req, res) => {
   res.json({
     success: true,
     message: 'OK',
